@@ -1,0 +1,7 @@
+<!-- -*- mode: XML -*- -->
+<launch>
+  <arg name="rgbd-demo" />
+
+  <node pkg="orbslam2" type="stereo" name="rs_stereo" args="$(find orbslam2)/../Vocabulary/ORBvoc.txt $(find orbslam2)/../RealSense_GPU/stereo_real_sense.yaml">
+  </node>
+</launch>

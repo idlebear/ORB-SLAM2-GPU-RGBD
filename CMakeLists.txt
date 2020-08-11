@@ -47,17 +47,21 @@ message(STATUS ${CMAKE_CUDA_COMPILER})
 
 LIST(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules)
 
-find_package(OpenCV 3.4.1 REQUIRED)
+set(OpenCV_DIR /usr/local)
+find_package(OpenCV 4.4 REQUIRED)
 find_package(Eigen3 3.1.0 REQUIRED)
 find_package(Pangolin REQUIRED)
+find_package(realsense2 REQUIRED)
 
 message(STATUS ${OpenCV_INCLUDE_DIRS})
 
 include_directories(
 ${PROJECT_SOURCE_DIR}
 ${PROJECT_SOURCE_DIR}/include
-${EIGEN3_INCLUDE_DIR}
+${OpenCV_INCLUDE_DIRS}
+${EIGEN3_INCLUDE_DIRS}
 ${Pangolin_INCLUDE_DIRS}
+${realsense2_INCLUDE_DIR}
 )
 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY lib)
@@ -100,7 +104,7 @@ ${EIGEN3_LIBS}
 ${Pangolin_LIBRARIES}
 ${PROJECT_SOURCE_DIR}/Thirdparty/DBoW2/lib/libDBoW2.so
 ${PROJECT_SOURCE_DIR}/Thirdparty/g2o/lib/libg2o.so
-/usr/local/lib/librealsense2.so
+${realsense2_LIBRARIES}
 nvToolsExt
 -lboost_system
 )

@@ -1,9 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
-include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
 
 set (CMAKE_CXX_STANDARD 11)
 
-rosbuild_init()
 
 IF(NOT ROS_BUILD_TYPE)
   SET(ROS_BUILD_TYPE Release)
@@ -24,13 +22,15 @@ message(STATUS "Using flag -std=c++11.")
 
 
 LIST(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/../../../cmake_modules)
+MESSAGE( ${CMAKE_MODULE_PATH} )
 
-find_package(OpenCV 3.4.1 REQUIRED
+find_package(OpenCV 4.4 REQUIRED
 NO_MODULE 
 PATHS /usr/local
 NO_DEFAULT_PATH) #make sure not doesn't link to ROS OpenCV version
 find_package(Eigen3 REQUIRED)
 find_package(Pangolin REQUIRED)
+find_package(realsense2 REQUIRED)
 
 message(STATUS ${OpenCV_INCLUDE_DIRS})
 message(STATUS ${CUDA_INCLUDE_DIRS})
@@ -42,12 +42,14 @@ LIST(APPEND CUDA_NVCC_FLAGS "--compiler-options -fno-strict-aliasing -use_fast_m
 
 
 include_directories(
-${PROJECT_SOURCE_DIR}
-${PROJECT_SOURCE_DIR}/../../../
-${PROJECT_SOURCE_DIR}/../../../include
-${Pangolin_INCLUDE_DIRS}
-/usr/local/lib/librealsense2.so
-nvToolsExt
+  ${PROJECT_SOURCE_DIR}
+  ${PROJECT_SOURCE_DIR}/../
+  ${PROJECT_SOURCE_DIR}/../include
+  ${OpenCV_INCLUDE_DIRS}
+  ${EIGEN3_INCLUDE_DIRS}
+  ${Pangolin_INCLUDE_DIRS}
+  ${realsense2_INCLUDE_DIRS}
+  # nvToolsExt
 )
 
 cuda_include_directories(
@@ -55,42 +57,41 @@ cuda_include_directories(
 )
 
 cuda_add_library(${PROJECT_NAME} SHARED
-../../../src/System.cc
-../../../src/Tracking.cc
-../../../src/LocalMapping.cc
-../../../src/LoopClosing.cc
-../../../src/ORBextractor.cc
-../../../src/ORBmatcher.cc
-../../../src/FrameDrawer.cc
-../../../src/Converter.cc
-../../../src/MapPoint.cc
-../../../src/KeyFrame.cc
-../../../src/Map.cc
-../../../src/MapDrawer.cc
-../../../src/Optimizer.cc
-../../../src/PnPsolver.cc
-../../../src/Frame.cc
-../../../src/KeyFrameDatabase.cc
-../../../src/Sim3Solver.cc
-../../../src/Initializer.cc
-../../../src/Viewer.cc
-../../../src/cuda/Allocator_gpu.cu
-../../../src/cuda/Fast_gpu.cu
-../../../src/cuda/Orb_gpu.cu
-../../../src/cuda/Cuda.cu
+  ../../../src/System.cc
+  ../../../src/Tracking.cc
+  ../../../src/LocalMapping.cc
+  ../../../src/LoopClosing.cc
+  ../../../src/ORBextractor.cc
+  ../../../src/ORBmatcher.cc
+  ../../../src/FrameDrawer.cc
+  ../../../src/Converter.cc
+  ../../../src/MapPoint.cc
+  ../../../src/KeyFrame.cc
+  ../../../src/Map.cc
+  ../../../src/MapDrawer.cc
+  ../../../src/Optimizer.cc
+  ../../../src/PnPsolver.cc
+  ../../../src/Frame.cc
+  ../../../src/KeyFrameDatabase.cc
+  ../../../src/Sim3Solver.cc
+  ../../../src/Initializer.cc
+  ../../../src/Viewer.cc
+  ../../../src/cuda/Allocator_gpu.cu
+  ../../../src/cuda/Fast_gpu.cu
+  ../../../src/cuda/Orb_gpu.cu
+  ../../../src/cuda/Cuda.cu
 )
 
 set(LIBS 
-
-${OpenCV_LIBS} 
-${CUDA_LIBRARIES}
-${EIGEN3_LIBS}
-${Pangolin_LIBRARIES}
-${PROJECT_SOURCE_DIR}/../../../Thirdparty/DBoW2/lib/libDBoW2.so
-${PROJECT_SOURCE_DIR}/../../../Thirdparty/g2o/lib/libg2o.so
-${PROJECT_SOURCE_DIR}/../../../build/lib/libORB_SLAM2.so
--lboost_system
-realsense2
+  ${OpenCV_LIBS} 
+  ${CUDA_LIBRARIES}
+  ${EIGEN3_LIBS}
+  ${Pangolin_LIBRARIES}
+  ${realsense2_LIBRARIES}
+  ${PROJECT_SOURCE_DIR}/../../../Thirdparty/DBoW2/lib/libDBoW2.so
+  ${PROJECT_SOURCE_DIR}/../../../Thirdparty/g2o/lib/libg2o.so
+  ${PROJECT_SOURCE_DIR}/../../../build/lib/libORB_SLAM2.so
+  -lboost_system
 )
 
 # Csi camera publishing 

@@ -1,0 +1,7 @@
+<!-- -*- mode: XML -*- -->
+<launch>
+  <arg name="rgbd-demo" />
+
+  <node pkg="orbslam2" type="rgbd" name="rs_rgbd" args="$(find orbslam2)/../Vocabulary/ORBvoc.txt $(find orbslam2)/../RealSense_GPU/rgbd_real_sense.yaml">
+  </node>
+</launch>
